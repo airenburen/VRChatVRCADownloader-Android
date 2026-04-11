@@ -30,12 +30,28 @@ jobs:
     - name: Create local.properties
       run: |
         echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+
+    - name: Generate signing keystore
+      run: |
+        keytool -genkey -v \
+          -keystore app/release.keystore \
+          -alias androiddebugkey \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -storepass android \
+          -keypass android \
+          -dname "CN=Android Debug,O=Android,C=US"
         
-    - name: Build Release APK
+    - name: Build Signed Release APK
       run: ./gradlew assembleRelease --stacktrace --no-daemon
+      env:
+        KEYSTORE_PASSWORD: android
+        KEY_ALIAS: androiddebugkey
+        KEY_PASSWORD: android
       
-    - name: Upload Release APK
+    - name: Upload Signed Release APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-release
-        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        name: app-release-signed
+        path: app/build/outputs/apk/release/app-release.apk

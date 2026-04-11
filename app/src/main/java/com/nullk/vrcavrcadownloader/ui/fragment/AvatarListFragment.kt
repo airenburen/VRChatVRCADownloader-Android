@@ -135,12 +135,25 @@ class AvatarListFragment : Fragment() {
                 return@setOnClickListener
             }
             
+            // Filter out avatars without assetUrl
+            val downloadable = selected.filter { it.assetUrl != null }
+            val skipped = selected.size - downloadable.size
+            
+            if (downloadable.isEmpty()) {
+                Toast.makeText(context, "选中的 Avatar 没有可下载的资源", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            
+            if (skipped > 0) {
+                Toast.makeText(context, "跳过 $skipped 个没有资源的 Avatar", Toast.LENGTH_SHORT).show()
+            }
+            
             // Check if download path is set
             if (PreferenceManager.getDownloadPath() == null) {
                 pickDownloadFolder()
             } else {
-                DownloadManager.addDownloads(selected)
-                Toast.makeText(context, "开始下载 ${selected.size} 个 Avatar", Toast.LENGTH_SHORT).show()
+                DownloadManager.addDownloads(downloadable)
+                Toast.makeText(context, "开始下载 ${downloadable.size} 个 Avatar", Toast.LENGTH_SHORT).show()
                 adapter.deselectAll()
             }
         }
@@ -180,23 +193,25 @@ class AvatarListFragment : Fragment() {
     private fun syncAvatars() {
         swipeRefresh.isRefreshing = true
         btnSync.isEnabled = false
-        
+
         lifecycleScope.launch {
             try {
-                val result = VRChatApi.getInstance().getAvatars(n = 100)
+                val result = VRChatApi.getInstance().getAvatarFiles()
                 result.onSuccess { avatars ->
                     allAvatars = avatars
-                    filterAvatars(etSearch.text?.toString() ?: "")
+                    filteredAvatars = avatars
+                    adapter.submitList(filteredAvatars)
+                    updateEmptyView()
                     CacheManager.saveAvatarList(avatars)
-                    
+
                     // Pre-cache images
                     avatars.forEach { avatar ->
                         avatar.thumbnailUrl?.let { url ->
                             CacheManager.cacheImage(url, avatar.id)
                         }
                     }
-                    
-                    Toast.makeText(context, R.string.toast_sync_success, Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(context, "同步成功，共 ${avatars.size} 个 Avatar", Toast.LENGTH_SHORT).show()
                 }.onFailure { error ->
                     Toast.makeText(context, "${getString(R.string.toast_sync_failed)}: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
