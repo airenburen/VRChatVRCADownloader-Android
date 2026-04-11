@@ -165,8 +165,8 @@ class VRChatApi private constructor() {
                         name = file.name ?: "Unknown",
                         description = file.description,
                         version = latestVersion.version ?: 1,
-                        createdAt = latestVersion.created_at,
-                        updatedAt = latestVersion.created_at,
+                        createdAt = latestVersion.createdAt,
+                        updatedAt = latestVersion.createdAt,
                         thumbnailUrl = extractThumbnailUrl(file, latestVersion),
                         assetUrl = fileUrl,
                         authorId = null,
@@ -185,6 +185,9 @@ class VRChatApi private constructor() {
     private fun extractThumbnailUrl(file: FileResponse, version: FileVersion): String? {
         // Try to get from file's imageUrl first
         file.imageUrl?.let { return it }
+
+        // Try thumbnailImageUrl
+        file.thumbnailImageUrl?.let { return it }
 
         // Try to get from version's file metadata
         version.file?.variants?.forEach { variant ->
