@@ -10,6 +10,7 @@ import com.nullk.vrcavrcadownloader.utils.PreferenceManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.coroutineContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -143,7 +144,7 @@ object DownloadManager {
                     var lastUpdateTime = System.currentTimeMillis()
                     var lastDownloadedBytes = 0L
                     
-                    while (isActive) {
+                    while (coroutineContext.isActive) {
                         val read = inputStream.read(buffer)
                         if (read == -1) break
                         
@@ -172,7 +173,7 @@ object DownloadManager {
                     
                     outputStream.flush()
                     
-                    if (isActive) {
+                    if (coroutineContext.isActive) {
                         updateTask(task.copy(
                             status = DownloadStatus.COMPLETED,
                             progress = 100,

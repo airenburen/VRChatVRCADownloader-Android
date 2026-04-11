@@ -56,12 +56,8 @@ class VRChatApi private constructor() {
                 chain.proceed(request)
             }
         
-        // Add logging interceptor for debug
-        if (BuildConfig.DEBUG) {
-            builder.addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-        }
+        // Add logging interceptor for debug (disabled in release)
+        // Logging disabled for production builds
         
         // Configure proxy if enabled
         if (!proxyHost.isNullOrEmpty() && proxyPort > 0) {
