@@ -7,6 +7,7 @@ import com.nullk.vrcavrcadownloader.data.model.FileResponse
 import com.nullk.vrcavrcadownloader.data.model.FileVersion
 import com.nullk.vrcavrcadownloader.utils.PreferenceManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -23,6 +24,9 @@ class VRChatApi private constructor() {
         private const val BASE_URL = "https://api.vrchat.cloud/api/1"
         private const val FILES_URL = "$BASE_URL/files"
         private const val USER_AGENT = "VRChatVRCADownloader-Android/1.0"
+        private const val MAX_RETRIES = 3
+        private const val RETRY_DELAY_MS = 2000L
+        private const val REQUEST_DELAY_MS = 100L
 
         @Volatile
         private var instance: VRChatApi? = null
@@ -63,6 +67,27 @@ class VRChatApi private constructor() {
         return builder.build()
     }
 
+    private suspend fun <T> withRetry(block: suspend () -> T): T {
+        var lastException: Exception? = null
+        for (attempt in 1..MAX_RETRIES) {
+            try {
+                return block()
+            } catch (e: Exception) {
+                lastException = e
+                val message = e.message ?: ""
+                // Check if it's a rate limit error (429)
+                if (message.contains("429") || message.contains("Too Many Requests")) {
+                    if (attempt < MAX_RETRIES) {
+                        delay(RETRY_DELAY_MS * attempt) // Exponential backoff
+                    }
+                } else {
+                    throw e // Not a rate limit error, throw immediately
+                }
+            }
+        }
+        throw lastException ?: Exception("Max retries exceeded")
+    }
+
     suspend fun getCurrentUser(): Result<Map<String, Any>> = withContext(Dispatchers.IO) {
         try {
             val request = Request.Builder()
@@ -91,30 +116,36 @@ class VRChatApi private constructor() {
         try {
             val allFiles = mutableListOf<FileResponse>()
             var offset = 0
-            val n = 100
+            val n = 50 // Reduced batch size to avoid rate limiting
+            var hasMore = true
 
-            while (true) {
-                val request = Request.Builder()
-                    .url("$FILES_URL?n=$n&offset=$offset")
-                    .build()
+            while (hasMore) {
+                val files = withRetry {
+                    val request = Request.Builder()
+                        .url("$FILES_URL?n=$n&offset=$offset")
+                        .build()
 
-                client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        throw Exception("HTTP ${response.code}")
+                    client.newCall(request).execute().use { response ->
+                        if (!response.isSuccessful) {
+                            throw Exception("HTTP ${response.code}")
+                        }
+
+                        val body = response.body?.string()
+                        if (body.isNullOrEmpty()) {
+                            emptyList()
+                        } else {
+                            gson.fromJson(body, Array<FileResponse>::class.java)?.toList() ?: emptyList()
+                        }
                     }
+                }
 
-                    val body = response.body?.string()
-                    if (body.isNullOrEmpty()) {
-                        return@use
-                    }
-
-                    val files = gson.fromJson(body, Array<FileResponse>::class.java)?.toList() ?: emptyList()
-                    if (files.isEmpty()) {
-                        return@use
-                    }
-
+                if (files.isEmpty()) {
+                    hasMore = false
+                } else {
                     allFiles.addAll(files)
                     offset += n
+                    // Add delay between requests to avoid rate limiting
+                    delay(REQUEST_DELAY_MS)
                 }
             }
 

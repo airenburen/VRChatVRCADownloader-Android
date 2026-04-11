@@ -19,6 +19,15 @@
             app:titleTextColor="@color/text_primary">
 
             <ImageButton
+                android:id="@+id/btnRelogin"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_login"
+                android:contentDescription="@string/btn_login_webview" />
+
+            <ImageButton
                 android:id="@+id/btnSettings"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

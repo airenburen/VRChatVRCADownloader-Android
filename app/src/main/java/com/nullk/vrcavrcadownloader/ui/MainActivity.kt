@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etCookie: EditText
     private lateinit var btnLoginCookie: MaterialButton
     private lateinit var btnLoginWebView: MaterialButton
+    private lateinit var btnRelogin: ImageButton
     private lateinit var btnSettings: ImageButton
     
     private lateinit var viewPagerAdapter: ViewPagerAdapter
@@ -52,8 +53,9 @@ class MainActivity : AppCompatActivity() {
         etCookie = findViewById(R.id.etCookie)
         btnLoginCookie = findViewById(R.id.btnLoginCookie)
         btnLoginWebView = findViewById(R.id.btnLoginWebView)
+        btnRelogin = findViewById(R.id.btnRelogin)
         btnSettings = findViewById(R.id.btnSettings)
-        
+
         setSupportActionBar(toolbar)
     }
     
@@ -97,6 +99,27 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
+
+        // Relogin
+        btnRelogin.setOnClickListener {
+            showReloginDialog()
+        }
+    }
+
+    private fun showReloginDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("重新登录")
+            .setMessage("选择登录方式")
+            .setPositiveButton("WebView登录") { _, _ ->
+                val intent = Intent(this, WebViewActivity::class.java)
+                startActivityForResult(intent, REQUEST_WEBVIEW_LOGIN)
+            }
+            .setNegativeButton("手动输入Cookie") { _, _ ->
+                showAuthScreen()
+                Toast.makeText(this, "请在登录页面输入Cookie", Toast.LENGTH_SHORT).show()
+            }
+            .setNeutralButton("取消", null)
+            .show()
     }
     
     private fun checkLoginState() {
