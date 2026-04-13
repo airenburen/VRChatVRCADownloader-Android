@@ -44,6 +44,7 @@ jobs:
           -dname "CN=ainaaina,O=ainaaina,C=cn"
         
     - name: Build Signed Release APK
+      id: build
       run: ./gradlew assembleRelease --stacktrace --no-daemon
       
     - name: Upload Signed Release APK
@@ -51,3 +52,14 @@ jobs:
       with:
         name: app-release-signed
         path: app/build/outputs/apk/release/app-release.apk
+        
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: app/build/outputs/apk/release/app-release.apk
+        name: Release ${{ github.sha }}
+        tag_name: ${{ github.sha }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
