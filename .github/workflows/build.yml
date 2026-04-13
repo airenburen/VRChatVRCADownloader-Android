@@ -3,8 +3,6 @@ name: Build APK
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -54,7 +52,7 @@ jobs:
         path: app/build/outputs/apk/release/app-release.apk
         
     - name: Create Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push'
       uses: softprops/action-gh-release@v1
       with:
         files: app/build/outputs/apk/release/app-release.apk
@@ -62,4 +60,4 @@ jobs:
         tag_name: ${{ github.sha }}
         generate_release_notes: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
