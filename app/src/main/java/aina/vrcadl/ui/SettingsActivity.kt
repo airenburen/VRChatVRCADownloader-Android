@@ -173,12 +173,12 @@ class SettingsActivity : AppCompatActivity() {
         val port = etProxyPort.text.toString().toIntOrNull() ?: 0
         
         if (host.isEmpty() || port <= 0) {
-            Toast.makeText(this, "请输入有效的代理地址和端�?, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "请输入有效的代理地址和端口", Toast.LENGTH_SHORT).show()
             return
         }
         
         btnTestProxy.isEnabled = false
-        btnTestProxy.text = "测试�?.."
+        btnTestProxy.text = "测试中..."
         
         lifecycleScope.launch {
             val result = VRChatApi.getInstance().testProxy(host, port)
@@ -221,8 +221,8 @@ class SettingsActivity : AppCompatActivity() {
     
     private fun showLogoutDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("退出登�?)
-            .setMessage("确定要退出登录吗�?)
+            .setTitle("退出登录")
+            .setMessage("确定要退出登录吗？")
             .setPositiveButton(R.string.dialog_confirm) { _, _ ->
                 PreferenceManager.clearAuth()
                 val intent = Intent(this, MainActivity::class.java)

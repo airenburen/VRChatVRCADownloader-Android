@@ -71,7 +71,7 @@ class DownloadService : Service() {
         
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("VRChat VRCA Downloader")
-            .setContentText("下载服务运行�?)
+            .setContentText("下载服务运行中")
             .setSmallIcon(R.drawable.ic_download)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -87,13 +87,13 @@ class DownloadService : Service() {
                 
                 if (activeDownloads > 0) {
                     updateNotification(
-                        "正在下载: $activeDownloads 个任�?,
-                        "已完�? $completedDownloads | 失败: $failedDownloads"
+                        "正在下载: $activeDownloads 个任务",
+                        "已完成: $completedDownloads | 失败: $failedDownloads"
                     )
                 } else if (tasks.isNotEmpty()) {
                     updateNotification(
                         "下载完成",
-                        "已完�? $completedDownloads | 失败: $failedDownloads"
+                        "已完成: $completedDownloads | 失败: $failedDownloads"
                     )
                 }
                 

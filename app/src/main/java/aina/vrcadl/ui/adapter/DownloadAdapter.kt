@@ -67,19 +67,19 @@ class DownloadAdapter(
             // Status and action button
             when (task.status) {
                 DownloadStatus.PENDING -> {
-                    tvStatus.text = "等待�?.."
+                    tvStatus.text = "等待�?.."
                     tvStatus.setTextColor(itemView.context.getColor(R.color.text_secondary))
                     btnAction.setImageResource(R.drawable.ic_cancel)
                     btnAction.setOnClickListener { onCancelClick(task) }
                 }
                 DownloadStatus.DOWNLOADING -> {
-                    tvStatus.text = "下载�?.."
+                    tvStatus.text = "下载中..."
                     tvStatus.setTextColor(itemView.context.getColor(R.color.info))
                     btnAction.setImageResource(R.drawable.ic_cancel)
                     btnAction.setOnClickListener { onCancelClick(task) }
                 }
                 DownloadStatus.PAUSED -> {
-                    tvStatus.text = "已暂�?
+                    tvStatus.text = "已暂停"
                     tvStatus.setTextColor(itemView.context.getColor(R.color.warning))
                     btnAction.setImageResource(R.drawable.ic_retry)
                     btnAction.setOnClickListener { onRetryClick(task) }
@@ -97,7 +97,7 @@ class DownloadAdapter(
                     btnAction.setOnClickListener { onRetryClick(task) }
                 }
                 DownloadStatus.CANCELLED -> {
-                    tvStatus.text = "已取�?
+                    tvStatus.text = "已取消"
                     tvStatus.setTextColor(itemView.context.getColor(R.color.text_secondary))
                     btnAction.setImageResource(R.drawable.ic_retry)
                     btnAction.setOnClickListener { onRetryClick(task) }

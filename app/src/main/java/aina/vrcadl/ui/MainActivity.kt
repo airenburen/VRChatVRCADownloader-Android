@@ -74,14 +74,14 @@ class MainActivity : AppCompatActivity() {
         btnLoginCookie.setOnClickListener {
             val cookie = etCookie.text.toString().trim()
             if (cookie.isEmpty()) {
-                Toast.makeText(this, "请输�?Cookie", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "请输入 Cookie", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
             // Extract auth value from cookie string
             val authValue = extractAuthCookie(cookie)
             if (authValue == null) {
-                Toast.makeText(this, "Cookie 格式不正�?, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Cookie 格式不正确", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             

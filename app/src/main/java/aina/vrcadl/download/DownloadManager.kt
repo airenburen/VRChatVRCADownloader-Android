@@ -67,7 +67,8 @@ object DownloadManager {
                 existingTask.status == DownloadStatus.CANCELLED) {
                 retryDownload(existingTask.id)
             }
-            // 如果任务正在下载或等待中，返回现有任�?            return existingTask
+            // 如果任务正在下载或等待中，返回现有任务
+            return existingTask
         }
         
         val task = DownloadTask(avatar = avatar)
@@ -137,7 +138,8 @@ object DownloadManager {
                     // SAF 路径 - 使用 DocumentFile
                     writeToSAF(downloadPath, filename, body.byteStream(), task, totalBytes)
                 } else {
-                    // 普通文件路�?                    val downloadDir = downloadPath 
+                    // 普通文件路径
+                    val downloadDir = downloadPath 
                         ?: appContext.getExternalFilesDir(null)?.absolutePath 
                         ?: appContext.filesDir.absolutePath
                     writeToFile(downloadDir, filename, body.byteStream(), task, totalBytes)
@@ -183,7 +185,8 @@ object DownloadManager {
             // 检查是否已存在同名文件，存在则删除
             tree.findFile(filename)?.delete()
             
-            // 创建新文�?            val newFile = tree.createFile("application/octet-stream", filename)
+            // 创建新文件
+            val newFile = tree.createFile("application/octet-stream", filename)
                 ?: return@withContext Result.failure(IOException("Cannot create file"))
             
             val uri = newFile.uri

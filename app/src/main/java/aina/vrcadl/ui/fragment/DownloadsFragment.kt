@@ -76,7 +76,7 @@ class DownloadsFragment : Fragment() {
     private fun setupListeners() {
         btnRetryAll.setOnClickListener {
             DownloadManager.retryAllFailed()
-            Toast.makeText(context, "重试所有失败任�?, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "重试所有失败任务", Toast.LENGTH_SHORT).show()
         }
         
         btnClearCompleted.setOnClickListener {
