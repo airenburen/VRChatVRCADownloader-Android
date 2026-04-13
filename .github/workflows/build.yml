@@ -59,5 +59,4 @@ jobs:
         name: Release ${{ github.sha }}
         tag_name: ${{ github.sha }}
         generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        token: ${{ secrets.RELEASE_TOKEN }}
