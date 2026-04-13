@@ -2,7 +2,6 @@
 
 VRChat VRCA Downloader 的 Android 版本，用于管理并下载自己 VRChat 账号下的 Avatar 文件。
 
-![App Icon](app/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
 ## ⚠️ 警告
 
