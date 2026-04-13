@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VRChat VRCA Downloader</string>
+    
+    <!-- Main Activity -->
+    <string name="title_avatar_list">Avatar 列表</string>
+    <string name="title_downloads">下载任务</string>
+    <string name="title_settings">设置</string>
+    
+    <!-- Auth -->
+    <string name="auth_title">登录</string>
+    <string name="auth_hint">请粘贴 auth Cookie 或使用内置登录</string>
+    <string name="auth_cookie_hint">auth=xxx;</string>
+    <string name="btn_login_webview">内置登录</string>
+    <string name="btn_login_cookie">使用 Cookie 登录</string>
+    <string name="btn_logout">退出登录</string>
+    
+    <!-- Avatar List -->
+    <string name="search_hint">搜索 Avatar...</string>
+    <string name="btn_sync">同步列表</string>
+    <string name="btn_download_selected">下载选中项</string>
+    <string name="btn_select_all">全选</string>
+    <string name="btn_deselect_all">取消全选</string>
+    <string name="avatar_name">名称</string>
+    <string name="avatar_version">版本</string>
+    <string name="avatar_date">日期</string>
+    <string name="no_avatars">暂无 Avatar，请先同步</string>
+    
+    <!-- Download -->
+    <string name="download_title">下载任务</string>
+    <string name="download_progress">下载中...</string>
+    <string name="download_complete">下载完成</string>
+    <string name="download_failed">下载失败</string>
+    <string name="download_paused">已暂停</string>
+    <string name="btn_retry">重试</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_clear_completed">清理已完成</string>
+    <string name="btn_retry_all">重试全部失败</string>
+    <string name="download_speed">%1$s/s</string>
+    <string name="download_progress_format">%1$s / %2$s</string>
+    
+    <!-- Settings -->
+    <string name="settings_general">常规设置</string>
+    <string name="settings_network">网络设置</string>
+    <string name="settings_download">下载设置</string>
+    <string name="setting_filename_template">文件名模板</string>
+    <string name="setting_filename_template_hint">可用变量: {short_name}, {name}, {version}, {id}, {date}</string>
+    <string name="setting_default_template">{short_name}</string>
+    <string name="setting_download_path">下载路径</string>
+    <string name="setting_download_path_hint">选择下载保存位置</string>
+    <string name="setting_proxy_enable">启用代理</string>
+    <string name="setting_proxy_host">代理主机</string>
+    <string name="setting_proxy_port">代理端口</string>
+    <string name="setting_proxy_test">测试代理</string>
+    <string name="setting_clear_cache">清除缓存</string>
+    <string name="setting_cache_size">缓存大小: %1$s</string>
+    <string name="setting_about">关于</string>
+    <string name="setting_version">版本 %1$s</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_delete_title">删除确认</string>
+    <string name="dialog_delete_message">确定要删除这个任务吗？</string>
+    <string name="dialog_clear_cache_title">清除缓存</string>
+    <string name="dialog_clear_cache_message">确定要清除所有缓存数据吗？</string>
+    
+    <!-- Warnings -->
+    <string name="warning_title">警告</string>
+    <string name="warning_message">严禁将本工具用于任何恶意用途！\n\n本工具旨在帮助你找回丢失的资产。\n请不要请求或修改本工具，用于窃取不属于你自己的资产！</string>
+    <string name="warning_agree">我已了解并同意</string>
+    
+    <!-- Toast Messages -->
+    <string name="toast_login_success">登录成功</string>
+    <string name="toast_login_failed">登录失败</string>
+    <string name="toast_sync_success">同步成功</string>
+    <string name="toast_sync_failed">同步失败</string>
+    <string name="toast_download_started">开始下载</string>
+    <string name="toast_download_complete">下载完成</string>
+    <string name="toast_download_failed">下载失败</string>
+    <string name="toast_no_selection">请先选择要下载的 Avatar</string>
+    <string name="toast_cache_cleared">缓存已清除</string>
+    <string name="toast_proxy_test_success">代理连接成功</string>
+    <string name="toast_proxy_test_failed">代理连接失败</string>
+</resources>
