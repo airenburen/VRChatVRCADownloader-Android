@@ -64,6 +64,5 @@ jobs:
         files: app/build/outputs/apk/release/app-release.apk
         name: Release ${{ github.sha }}
         tag_name: release-${{ github.sha }}
-        generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        body: ${{ github.event.head_commit.message }}
+        token: ${{ secrets.GITHUB_TOKEN }}
