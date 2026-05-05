@@ -8,49 +8,53 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-        
+
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
-      
+      with:
+        packages: 'platforms;android-34 build-tools;34.0.0 platform-tools'
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
+
     - name: Create local.properties
       run: |
-        echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
 
     - name: Generate signing keystore
       run: |
-        keytool -genkey -v \
-          -keystore app/vrca.keystore \
-          -alias vrca \
-          -keyalg RSA \
-          -keysize 2048 \
-          -validity 10000 \
-          -storepass vrca1234 \
-          -keypass vrca1234 \
-          -dname "CN=ainaaina,O=ainaaina,C=cn"
-        
+        if [ ! -f app/vrca.keystore ]; then
+          keytool -genkey -v \
+            -keystore app/vrca.keystore \
+            -alias vrca \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass vrca1234 \
+            -keypass vrca1234 \
+            -dname "CN=ainaaina,O=ainaaina,C=cn"
+        fi
+
     - name: Build Signed Release APK
       id: build
       run: ./gradlew assembleRelease --stacktrace --no-daemon
-      
+
     - name: Upload Signed Release APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release-signed
         path: app/build/outputs/apk/release/app-release.apk
-        
+
     - name: Create Release
       if: github.event_name == 'push'
       uses: softprops/action-gh-release@v1
@@ -59,4 +63,5 @@ jobs:
         name: Release ${{ github.sha }}
         tag_name: release-${{ github.sha }}
         generate_release_notes: true
-        token: ${{ secrets.RELEASE_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
