@@ -236,7 +236,6 @@ class SettingsActivity : AppCompatActivity() {
     
     override fun onPause() {
         super.onPause()
-        // Save settings
         PreferenceManager.setFilenameTemplate(etFilenameTemplate.text.toString())
         if (switchProxy.isChecked) {
             updateProxySettings()

@@ -75,11 +75,15 @@ class VRChatApi private constructor() {
             } catch (e: Exception) {
                 lastException = e
                 val message = e.message ?: ""
-                if (message.contains("429") || message.contains("Too Many Requests")) {
-                    if (attempt < MAX_RETRIES) {
-                        delay(RETRY_DELAY_MS * attempt)
-                    }
-                } else {
+                val isRetryable = message.contains("429") ||
+                    message.contains("Too Many Requests") ||
+                    e is java.net.SocketTimeoutException ||
+                    e is java.net.ConnectException ||
+                    e is java.net.UnknownHostException ||
+                    e is java.io.IOException
+                if (isRetryable && attempt < MAX_RETRIES) {
+                    delay(RETRY_DELAY_MS * attempt)
+                } else if (!isRetryable) {
                     throw e
                 }
             }
@@ -179,10 +183,10 @@ class VRChatApi private constructor() {
     }
 
     /**
-     * �?FileResponse �?FileVersion 中提取缩略图 URL
+     * �?FileResponse �?FileVersion 中提取缩略图 URL
      */
     private fun extractThumbnailUrl(file: FileResponse, version: FileVersion): String? {
-        // 1. 检�?FileResponse 的图�?URL
+        // 1. 检�?FileResponse 的图�?URL
         if (!file.imageUrl.isNullOrEmpty() && file.imageUrl.startsWith("http")) {
             return file.imageUrl
         }
@@ -196,7 +200,7 @@ class VRChatApi private constructor() {
             return file.previewImageUrl
         }
 
-        // 2. 检�?FileVersion 的图�?URL (版本对象可能直接包含)
+        // 2. 检�?FileVersion 的图�?URL (版本对象可能直接包含)
         if (!version.imageUrl.isNullOrEmpty() && version.imageUrl.startsWith("http")) {
             return version.imageUrl
         }
@@ -218,43 +222,6 @@ class VRChatApi private constructor() {
         }
 
         return null
-    }
-
-    /**
-     * 递归在对象中查找第一个有效的图片 URL
-     */
-    private fun findFirstImageUrl(obj: Any?): String? {
-        return when (obj) {
-            is Map<*, *> -> {
-                val imageFields = listOf(
-                    "imageUrl", "imageURL", "thumbnailImageUrl", "thumbnailUrl",
-                    "iconUrl", "previewImageUrl", "url"
-                )
-                for (field in imageFields) {
-                    val value = obj[field]
-                    if (value is String && value.startsWith("http") &&
-                        (value.contains(".png", ignoreCase = true) ||
-                         value.contains(".jpg", ignoreCase = true) ||
-                         value.contains(".jpeg", ignoreCase = true) ||
-                         value.contains(".webp", ignoreCase = true))) {
-                        return value
-                    }
-                }
-                for (value in obj.values) {
-                    val found = findFirstImageUrl(value)
-                    if (found != null) return found
-                }
-                null
-            }
-            is List<*> -> {
-                for (item in obj) {
-                    val found = findFirstImageUrl(item)
-                    if (found != null) return found
-                }
-                null
-            }
-            else -> null
-        }
     }
 
     suspend fun testProxy(host: String, port: Int): Result<Boolean> = withContext(Dispatchers.IO) {

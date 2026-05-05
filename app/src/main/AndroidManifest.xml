@@ -22,7 +22,7 @@
         android:roundIcon="@drawable/ic_vrchat"
         android:supportsRtl="true"
         android:theme="@style/Theme.VRChatVRCADownloader"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         tools:targetApi="34">
 
         <activity

@@ -62,8 +62,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupViewPager() {
         viewPagerAdapter = ViewPagerAdapter(this)
         viewPager.adapter = viewPagerAdapter
-        viewPager.offscreenPageLimit = 2
-        
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = viewPagerAdapter.getPageTitle(position)
         }.attach()

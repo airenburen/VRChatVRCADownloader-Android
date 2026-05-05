@@ -78,12 +78,6 @@ class DownloadAdapter(
                     btnAction.setImageResource(R.drawable.ic_cancel)
                     btnAction.setOnClickListener { onCancelClick(task) }
                 }
-                DownloadStatus.PAUSED -> {
-                    tvStatus.text = "已暂停"
-                    tvStatus.setTextColor(itemView.context.getColor(R.color.warning))
-                    btnAction.setImageResource(R.drawable.ic_retry)
-                    btnAction.setOnClickListener { onRetryClick(task) }
-                }
                 DownloadStatus.COMPLETED -> {
                     tvStatus.text = "下载完成"
                     tvStatus.setTextColor(itemView.context.getColor(R.color.success))

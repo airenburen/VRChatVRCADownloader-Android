@@ -27,7 +27,7 @@ object DownloadManager {
     
     private lateinit var appContext: Context
     private val client: OkHttpClient by lazy { createClient() }
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
     private val _tasks = MutableStateFlow<List<DownloadTask>>(emptyList())
     val tasks: StateFlow<List<DownloadTask>> = _tasks
@@ -36,6 +36,11 @@ object DownloadManager {
     
     fun init(context: Context) {
         appContext = context.applicationContext
+    }
+    
+    fun shutdown() {
+        scope.cancel()
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
     
     private fun createClient(): OkHttpClient {

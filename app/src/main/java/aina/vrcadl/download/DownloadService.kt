@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import aina.vrcadl.R
 import aina.vrcadl.data.model.DownloadStatus
@@ -41,10 +42,16 @@ class DownloadService : Service() {
     override fun onBind(intent: Intent?): IBinder = binder
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = createNotification()
-        startForeground(NOTIFICATION_ID, notification)
-        
-        return START_STICKY
+        try {
+            val notification = createNotification()
+            startForeground(NOTIFICATION_ID, notification)
+        } catch (e: RuntimeException) {
+            Log.e("DownloadService", "Failed to start foreground: ${e.message}")
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
+        return START_NOT_STICKY
     }
     
     private fun createNotificationChannel() {
@@ -97,9 +104,13 @@ class DownloadService : Service() {
                     )
                 }
                 
-                // Stop service if no active downloads
-                if (activeDownloads == 0 && !DownloadManager.hasActiveDownloads()) {
-                    stopForeground(STOP_FOREGROUND_REMOVE)
+                val allTerminal = tasks.all {
+                    it.status == DownloadStatus.COMPLETED ||
+                    it.status == DownloadStatus.FAILED ||
+                    it.status == DownloadStatus.CANCELLED
+                }
+                if (tasks.isEmpty() || (allTerminal && activeDownloads == 0)) {
+                    stopForeground(STOP_FOREGROUND_DETACH)
                     stopSelf()
                 }
             }

@@ -50,11 +50,11 @@ class AvatarListFragment : Fragment() {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                // Handle folder selection
-                val path = uri.path
-                if (path != null) {
-                    PreferenceManager.setDownloadPath(path)
-                }
+                requireActivity().contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                PreferenceManager.setDownloadPath(uri.toString())
             }
         }
     }
@@ -92,11 +92,11 @@ class AvatarListFragment : Fragment() {
             onItemClick = { avatar ->
                 // Show avatar details or download
                 DownloadManager.addDownload(avatar)
-                Toast.makeText(context, "开始下�? ${avatar.shortName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "开始下�? ${avatar.shortName}", Toast.LENGTH_SHORT).show()
             },
             onDownloadClick = { avatar ->
                 DownloadManager.addDownload(avatar)
-                Toast.makeText(context, "开始下�? ${avatar.shortName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "开始下�? ${avatar.shortName}", Toast.LENGTH_SHORT).show()
             },
             onSelectionChanged = { _, _ ->
                 updateSelectAllCheckbox()
@@ -140,7 +140,7 @@ class AvatarListFragment : Fragment() {
             val skipped = selected.size - downloadable.size
             
             if (downloadable.isEmpty()) {
-                Toast.makeText(context, "选中�?Avatar 没有可下载的资源", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "选中�?Avatar 没有可下载的资源", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             
@@ -153,7 +153,7 @@ class AvatarListFragment : Fragment() {
                 pickDownloadFolder()
             } else {
                 DownloadManager.addDownloads(downloadable)
-                Toast.makeText(context, "开始下�?${downloadable.size} �?Avatar", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "开始下�?${downloadable.size} �?Avatar", Toast.LENGTH_SHORT).show()
                 adapter.deselectAll()
             }
         }
@@ -211,7 +211,7 @@ class AvatarListFragment : Fragment() {
                         }
                     }
 
-                    Toast.makeText(context, "同步成功，共 ${avatars.size} �?Avatar", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "同步成功，共 ${avatars.size} �?Avatar", Toast.LENGTH_SHORT).show()
                 }.onFailure { error ->
                     Toast.makeText(context, "${getString(R.string.toast_sync_failed)}: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
